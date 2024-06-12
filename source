@@ -1,13 +1,40 @@
-while true do
-    wait(1)
-mouse = game.Players.LocalPlayer:GetMouse()
-tool = Instance.new("Tool")
-tool.RequiresHandle = false
-tool.Name = "ERO POGI"
-tool.Activated:connect(function()
-local pos = mouse.Hit+Vector3.new(0,2.5,0)
-pos = CFrame.new(pos.X,pos.Y,pos.Z)
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
-end)
-tool.Parent = game.Players.LocalPlayer.Backpack
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local mouse = player:GetMouse()
+
+local function createTool()
+    local tool = Instance.new("Tool")
+    tool.RequiresHandle = false
+    tool.Name = "ERO POGI"
+
+    tool.Activated:Connect(function()
+        local character = player.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            local pos = mouse.Hit.Position + Vector3.new(0, 2.5, 0)
+            local targetCFrame = CFrame.new(pos.X, pos.Y, pos.Z)
+
+            -- Error handling
+            pcall(function()
+                character.HumanoidRootPart.CFrame = targetCFrame
+            end)
+        end
+    end)
+
+    tool.Parent = player.Backpack
 end
+
+-- Remove any existing tool to avoid duplicates
+for _, tool in ipairs(player.Backpack:GetChildren()) do
+    if tool.Name == "ERO POGI" then
+        tool:Destroy()
+    end
+end
+
+createTool()
+
+-- Monitor and reset tool if necessary
+game:GetService("RunService").Stepped:Connect(function()
+    if not player.Backpack:FindFirstChild("ERO POGI") then
+        createTool()
+    end
+end)
