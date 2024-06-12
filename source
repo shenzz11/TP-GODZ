@@ -7,17 +7,20 @@ local function createTool()
     tool.RequiresHandle = false
     tool.Name = "ERO POGI"
 
-    tool.Activated:Connect(function()
-        local character = player.Character
-        if character and character:FindFirstChild("HumanoidRootPart") then
-            local pos = mouse.Hit.Position + Vector3.new(0, 2.5, 0)
-            local targetCFrame = CFrame.new(pos.X, pos.Y, pos.Z)
+    tool.Equipped:Connect(function()
+        -- Resetting the tool state whenever it is equipped
+        tool.Activated:Connect(function()
+            local character = player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                local pos = mouse.Hit.Position + Vector3.new(0, 2.5, 0)
+                local targetCFrame = CFrame.new(pos.X, pos.Y, pos.Z)
 
-            -- Error handling
-            pcall(function()
-                character.HumanoidRootPart.CFrame = targetCFrame
-            end)
-        end
+                -- Error handling
+                pcall(function()
+                    character.HumanoidRootPart.CFrame = targetCFrame
+                end)
+            end
+        end)
     end)
 
     tool.Parent = player.Backpack
